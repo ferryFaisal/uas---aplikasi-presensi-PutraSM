@@ -12,67 +12,45 @@ if (isset($_SESSION['role'])) {
   header("Location:login.php");
 }
 
-$nameErr = $nimErr = $kelasErr = "";
-$name = $nim = $kelas = "";
-$valName = $valNim = $valKelas = false;
+$nameErr = $emailErr = $passErr = $repassErr = $roleErr = "";
+$name = $email = $pass = $repass = $role = "";
+$valName = $valEmail = $valPass = $valRepass = $valRole = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  if(empty($_POST["name"])) {
-    $nameErr = "Name is required";
-  } else {
-    $name = test_input($_POST["name"]);
-    $valName = true;
-  }
-
-  if(empty($_POST["nim"])) {
-    $nimErr = "Nim is required";
-  } else {
-    $nim = test_input($_POST["nim"]);
-    if(!filter_var($nim, FILTER_VALIDATE_INT)) {
-      $nimErr = "Invalid nim format";
-  } else {
-    require "database.php";
-      $sql = "SELECT nim FROM mahasiswa";
-      $result = $conn->query($sql);
-      if ($result->num_rows > 0) {
-          while ($row = $result->fetch_assoc()) {
-              if ($row["nim"] == $nim){
-                  $nimErr = "Nim already exist";
-                  $valNim = false;
-                  break;
-              } else {
-                $valNim = true;
-              }
-          }
-      } else {
-          $valNim = true;
-          // echo "0 results";
-      }
-      $conn ->close();
-    }
-  }
-
-  if(empty($_POST["kelas"])) {
-    $kelasErr = "Kelas is required";
-  } else {
-    $kelas = test_input($_POST["kelas"]);
-    $valKelas = true;
-  }
-  
-  if($valName && $valNim && $valKelas){
+  if (isset($_POST['Upload'])) {
+    $name = cek($_POST['name']);
+    $email = cek($_POST['inputEmail']);
+    $role = cek($_POST['role']);
     require 'database.php';
-    $sql = "INSERT INTO mahasiswa (nim, nama, kelas) 
-    VALUES ('$nim', '$name', '$kelas')";
-
-    if ($conn->query($sql) === TRUE) {
-        // echo "New record created successfully";
+    $password = cek($_POST['inputPassword']);
+    $sql = "SELECT email from user WHERE email = '$email'";
+    $result = $conn->query($sql);
+    //cek email terdaftar
+    if ($result->num_rows == 0) {
+      //cek pw sama
+      // echo "pw1 : ".cek($password).", pw2 : ".$cpassword."<br>";
+        // echo "masuk";
+        $sql = "INSERT INTO user (email, name, password, role, date_create, date_modified) 
+        VALUES 
+        ('$email','$name','$password','$role',current_timestamp(),current_timestamp())";
+        if ($conn->query($sql) === TRUE) {
+          echo '<script>alert("User baru telah ditambahkan")</script>';
+          // echo "New record created succesfully";
+          // header("Location:login.php");
+        } else {
+          echo "Error: " . $sql . "<br>" . $conn->error;
+        }
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+      $emailErr = "Email sudah terdaftar";
+      echo '<script>alert("Email sudah terdaftar")</script>';
+      // echo $emailErr;
     }
     $conn->close();
+    //insert in mysql?
+    // echo "email: $email, name: $name, pw: $password, role: $role";
   }
 }
 
-function test_input($data) {
+function cek($data) {
   $data = trim($data);
   $data = stripslashes($data);
   $data = htmlspecialchars($data);
@@ -105,9 +83,9 @@ function test_input($data) {
 // session_start();
 //pemeriksaan session
 if (isset($_SESSION['role'])) {//jika sudah login
-  if ($_SESSION['role'] != 'Admin') {
-      header ("Location: index.php");
-  }
+    if ($_SESSION['role'] != 'Admin') {
+        header ("Location: index.php");
+    }
     //menampilkan isi session
     // echo "<h1>Selamat Datang ".$_SESSION['name']."</h1>";
     // echo "<h2>Halaman ini hanya bisa diakses jika Anda sudah login</h2>";
@@ -212,7 +190,7 @@ if (isset($_SESSION['role'])) {//jika sudah login
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Charts</span></a>
       </li> -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="table_mhs.php">
           <i class="fas fa-fw fa-table"></i>
           <span>Table Mahasiswa</span></a>
@@ -222,7 +200,7 @@ if (isset($_SESSION['role'])) {//jika sudah login
           <i class="fas fa-fw fa-table"></i>
           <span>Table User</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="table_pres.php">
           <i class="fas fa-fw fa-table"></i>
           <span>Table Presensi</span></a>
@@ -250,48 +228,52 @@ if (isset($_SESSION['role'])) {//jika sudah login
           <div class="card-body">
             <div class="table-responsive">
               <!-- Button trigger modal -->
-              <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#exampleModal">
+              <!-- <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#exampleModal">
                 Tambah Mahasiswa
-              </button>
+              </button> -->
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
+                <thead>
                   <tr>
-                    <th>Nim</th>
-                    <th>Nama</th>
+                    <th>Tanggal Presensi</th>
+                    <th>Makul</th>
                     <th>Kelas</th>
-                    <th>Action</th>
+                    <th>NIM</th>
+                    <th>Nama</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
-                    <th>Nim</th>
-                    <th>Name</th>
+                    <th>Tanggal Presensi</th>
+                    <th>Makul</th>
                     <th>Kelas</th>
-                    <th>Action</th>
+                    <th>NIM</th>
+                    <th>Nama</th>
+                    <th>Status</th>
                   </tr>
                 </tfoot>
                 <tbody>
                 <?php
                 require 'database.php';
-                $sql = "SELECT * from mahasiswa ORDER BY nim";
+                $sql = "SELECT * from presensi ORDER BY tgl_presensi,makul,kelas,nim";
                 $result = $conn->query($sql);
                 if ($result->num_rows > 0) {
                   // output data of each row
                   while($row = $result->fetch_assoc()) {
                     ?>
                     <tr>
+                          <td><?=$row['tgl_presensi']?></td>
+                          <td><?=$row['makul']?></td>
+                          <td><?=$row['kelas']?></td>
                           <td><?=$row['nim']?></td>
                           <td><?=$row['nama']?></td>
-                          <td><?=$row['kelas']?></td>
-                          <?php echo
-                          "<td><a class='btn btn-success' href='update_nim.php?nim=$row[nim]'>Edit</a> | 
-                          <a class='btn btn-danger' href='delete_mhs.php?nim=$row[nim]' onClick=\"return confirm('Anda yakin akan menghapus record ini?')\">Delete</a></td>"
-                          ?>
+                          <td><?=$row['status_presensi']?></td>
                       </tr>
                     <?php
                   }
                 } else {
-                  // echo "0 results";
+                  echo "0 results";
                 }
                 $conn->close();
 				        ?>
@@ -376,32 +358,39 @@ if (isset($_SESSION['role'])) {//jika sudah login
         </button>
       </div>
       <div class="modal-body">
-      <form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-            <div class="form-group">
-              <p>Nim:<span class="error">*<?php echo $nimErr;?></span><br></p>
-              <input class="form-control" type="number" name="nim"> 
-              <br>
+      <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+          <div class="form-group">
+              <div class="form-label-group">
+                <input type="text" id="Name" name="name" class="form-control" placeholder="Name" required autofocus>
+                <label for="Name">Name</label>
+              </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label-group">
+              <input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="Email address" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Format email salah">
+              <label for="inputEmail">Email address</label>
             </div>
-            <div class="form-group">
-              <p>Nama: <span class="error">*<?php echo $nameErr;?></span></p>
-              <input class="form-control" type="text" name="name">
-              <br>
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Role</label>
             </div>
+            <select class="custom-select" id="inputGroupSelect01" name="role" required>
+              <option value="" selected>->Select here<-</option>
+              <option value="Admin">Admin</option>
+              <option value="Dosen">Dosen</option>
+            </select>
+          </div>
             <div class="form-group">
-              <p>Kelas:<span class="error">*<?php echo $kelasErr;?></span></p>
-              <select class="form-control" name="kelas">
-                <option value="">---select---</option>
-                <option value="5A">5A</option>
-                <option value="5B">5B</option>
-                </select>
-              <br>
+              <div class="form-label-group">
+                <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required minlength=8 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters">
+                <label for="inputPassword">Password</label>
+              </div>
             </div>
-            <form method="post" enctype="multipart/form-data">
-              <input type="submit" class="btn btn-primary col-md-3 offset-md-2" name="Upload" value="Add">
-              <!-- <a href="select.php"><input class='btn btn-primary col-md-3 offset-md-2' value="Cancel" action=tables_products.php></a>  -->
-              <button type="button" class="btn btn-secondary col-md-3 offset-md-2" data-dismiss="modal">Close</button>
-            </form>
-          </form>       
+          <input type="submit" class="btn btn-primary col-md-3 offset-md-2" name="Upload" value="Add">
+          <!-- <a href="select.php"><input class='btn btn-primary col-md-3 offset-md-2' value="Cancel" action=tables_products.php></a>  -->
+          <button type="button" class="btn btn-secondary col-md-3 offset-md-2" data-dismiss="modal">Close</button>
+        </form>       
       </div>
       <!-- <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

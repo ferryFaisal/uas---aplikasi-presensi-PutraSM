@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-// session_start();
-// if(isset($_SESSION['role'])) {
-//   if($_SESSION['role'] == 'admin') {
+session_start();
+if (isset($_SESSION['role'])) {
+  if ($_SESSION['role'] == 'Admin') {
 
-//   } else {
-//     header ("Location: index.php");
-//   }
-// } else {
-//   header ("Location: login.php");
-// }
-// define variables and set to empty values
+  } else {
+    header("Location: admin.php");
+  }
+} else {
+  header("Location:login.php");
+}
+
 $nameErr = $emailErr = $passErr = $repassErr = $roleErr = "";
 $name = $email = $pass = $repass = $role = "";
 $valName = $valEmail = $valPass = $valRepass = $valRole = false;
@@ -114,9 +114,12 @@ function test_input($data) {
 
 <body id="page-top">
 <?php
-session_start();
+// session_start();
 //pemeriksaan session
-if (isset($_SESSION['name'])) {//jika sudah login
+if (isset($_SESSION['role'])) {//jika sudah login
+  if ($_SESSION['role'] != 'Admin') {
+      header ("Location: index.php");
+  }
     //menampilkan isi session
     // echo "<h1>Selamat Datang ".$_SESSION['name']."</h1>";
     // echo "<h2>Halaman ini hanya bisa diakses jika Anda sudah login</h2>";
@@ -194,12 +197,12 @@ if (isset($_SESSION['name'])) {//jika sudah login
 
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
-      <!-- <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" href="admin.php">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span>
         </a>
-      </li> -->
+      </li>
       <!-- <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-folder"></i>
@@ -230,6 +233,11 @@ if (isset($_SESSION['name'])) {//jika sudah login
         <a class="nav-link" href="table_user.php">
           <i class="fas fa-fw fa-table"></i>
           <span>Table User</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="table_pres.php">
+          <i class="fas fa-fw fa-table"></i>
+          <span>Table Presensi</span></a>
       </li>
     </ul>
 

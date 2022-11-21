@@ -18,14 +18,14 @@
 
 <body class="bg-dark">
   <?php
-  // session_start();
-  // if (isset($_SESSION['role'])) {
-  //   if ($_SESSION['role'] == 'Admin') {
-  //     header("location: table_mhs.php");
-  //   } else {
-  //     header("location: index.php");
-  //   }
-  // }
+  session_start();
+  if (isset($_SESSION['role'])) {
+    if ($_SESSION['role'] == 'Admin') {
+      header("location: table_mhs.php");
+    } else {
+      header("location: index.php");
+    }
+  }
   $pass = $email = "";
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     require 'database.php';
