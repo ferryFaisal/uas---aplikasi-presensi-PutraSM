@@ -39,15 +39,28 @@
                     <option value="5A"> 5A </option>
                     <option value="5B"> 5B </option>
                   </select>
+                  <!-- <?php
+                  $selected = "5A";
+                  $options = array ('5A', '5B');
+                  echo "<select name='kelas' id='kelas' class='form-control' autofocus='autofocus'>";
+                  foreach ($options as $option) {
+                    if ($selected == $option){
+                      echo "<option selected = 'selected' value='$option'>$option</option>";
+                    } else {
+                      echo "<option value='$option'>$option</option>";
+                    }
+                  }
+                  echo "</select>";
+                  ?> -->
                 </div>
               </div>
             </div><hr>
-            <div class="row text-center">
+            <!-- <div class="row text-center">
                 <div class="col-md-4"><strong>Nomor Induk Mahasiswa</strong></div>
                 <div class="col-md-4"><strong>Nama Lengkap</strong></div>
                 <div class="col-md-4"><strong>Status Presensi</strong></div>
-            </div><hr>
-            <div class="row form-row mb-1">
+            </div><hr> -->
+            <!-- <div class="row form-row mb-1">
               <div class="col-md-4">
                 <div class="form-label-group">
                   <input type="text" id="nim" name="nim" class="form-control" placeholder="NIM" autofocus="autofocus" value="3202016040">
@@ -276,8 +289,45 @@
                   </select>
                 </div>
               </div>
-            </div>
+            </div> -->
           <!-- </div> -->
+          <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>Nomor Induk Mahasiswa</th>
+                    <th>Nama Lengkap Mahasiswa</th>
+                    <th>Status Presensi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <?php
+                require 'database.php';
+                $sql = "SELECT * from mahasiswa ORDER BY nim";
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                  // output data of each row
+                  while($row = $result->fetch_assoc()) {
+                ?>
+                  <tr>
+                    <td><?=$row['nim']?></td>
+                    <td><?=$row['nama']?></td>
+                    <td><select name="presensi" id="presensi" class="form-control text-center" autofocus="autofocus">
+                      <option value=""> -- Pilih Status -- </option>
+                      <option value="Hadir"> Hadir </option>
+                      <option value="Sakit"> Sakit </option>
+                      <option value="Izin"> Izin </option>
+                      <option value="Alpa"> Alpa </option>
+                  </select></td>
+                  </tr>
+                <?php
+                  }
+                } else {
+                  echo "0 results";
+                }
+                $conn->close();
+				        ?>
+                </tbody>
+              </table>
           <br>
           <p class="text-center">
           <input type="submit" name="submit" value="Simpan Presensi" class="btn btn-primary btn-block"></p>
