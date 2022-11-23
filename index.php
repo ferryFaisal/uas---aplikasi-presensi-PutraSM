@@ -5,7 +5,7 @@ session_start();
 //pemeriksaan session
 if (!isset($_SESSION['role'])) {//jika sudah login
   //session belum ada artinya belum login
-  header("Location:admin/trash/login.php");
+  header("Location: login.php");
 }
 function cek($data) {
   $data = trim($data);
@@ -109,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <div class="row form-row mb-1">
               <div class="col-md-4">
                 <div class="form-label-group">
-                  <input type="text" id="nim" name="nim" class="form-control" placeholder="NIM" autofocus="autofocus" value="<?=$row['nim']?>" readonly>
+                  <input type="text" id="nim" name="nim" class="form-control text-center" placeholder="NIM" autofocus="autofocus" value="<?=$row['nim']?>" readonly>
                 </div>
               </div>
               <div class="col-md-4">
@@ -119,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </div>
               <div class="col-md-4">
                 <div class="form-label-group">
-                  <select name="presensi" id="presensi" class="form-control" autofocus="autofocus" required>
+                  <select name="presensi" id="presensi" class="form-control text-center" autofocus="autofocus" required>
                       <option selected="selected" value="Hadir"> Hadir </option>
                       <option value="Sakit"> Sakit </option>
                       <option value="Izin"> Izin </option>

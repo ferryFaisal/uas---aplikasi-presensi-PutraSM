@@ -2,15 +2,15 @@
 <html lang="en">
 <?php
 session_start();
-if (isset($_SESSION['role'])) {
-  if ($_SESSION['role'] == 'Admin') {
+// if (isset($_SESSION['role'])) {
+//   if ($_SESSION['role'] == 'Admin') {
 
-  } else {
-    header("Location: admin.php");
-  }
-} else {
-  header("Location:login.php");
-}
+//   } else {
+//     header("Location: admin.php");
+//   }
+// } else {
+//   header("Location:login.php");
+// }
 
 $nameErr = $nimErr = $kelasErr = "";
 $name = $nim = $kelas = "";
@@ -104,21 +104,21 @@ function test_input($data) {
 <?php
 // session_start();
 //pemeriksaan session
-if (isset($_SESSION['role'])) {//jika sudah login
-  if ($_SESSION['role'] != 'Admin') {
-      header ("Location: index.php");
-  }
-    //menampilkan isi session
-    // echo "<h1>Selamat Datang ".$_SESSION['name']."</h1>";
-    // echo "<h2>Halaman ini hanya bisa diakses jika Anda sudah login</h2>";
-    // echo "<h2>Klik <a href='logout.php'>di sini (logout.php)</a>
-    // untuk LOGOUT</h2>";
-} else {
-    //session belum ada artinya belum login
-    header("Location:login.php");
-    // die("Anda belum login! Anda tidak berhak masuk ke halaman ini. Silahkan login
-    // <a href='login.php'>di sini</a>");
-}
+// if (isset($_SESSION['role'])) {//jika sudah login
+//   if ($_SESSION['role'] != 'Admin') {
+//       header ("Location: index.php");
+//   }
+//     //menampilkan isi session
+//     // echo "<h1>Selamat Datang ".$_SESSION['name']."</h1>";
+//     // echo "<h2>Halaman ini hanya bisa diakses jika Anda sudah login</h2>";
+//     // echo "<h2>Klik <a href='logout.php'>di sini (logout.php)</a>
+//     // untuk LOGOUT</h2>";
+// } else {
+//     //session belum ada artinya belum login
+//     header("Location:login.php");
+//     // die("Anda belum login! Anda tidak berhak masuk ke halaman ini. Silahkan login
+//     // <a href='login.php'>di sini</a>");
+// }
 ?>
   <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
